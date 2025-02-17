@@ -12,8 +12,8 @@ const char* mqtt_user = "broker2";
 const char* mqtt_pass = "Secret!@#$1234";
 const char* mqtt_topic = "DMA/OTA/PUB";
 const char* ota_command_topic = "DMA/OTA/SUB";
-const char* ota_url = "https://raw.githubusercontent.com/rezaul-rimon/ESP32-OTA/main/pio/build/esp32dev/firmware.bin";
-const char* device_id = "OTA-0000";
+const char* ota_url = "https://raw.githubusercontent.com/rezaul-rimon/OTA-Practice/main/ota/firmware.bin";
+const char* device_id = "OTA-5555";
 
 void performOTA();
 WiFiClient espClient;
