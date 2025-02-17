@@ -13,7 +13,7 @@ const char* mqtt_pass = "Secret!@#$1234";
 const char* mqtt_topic = "DMA/OTA/PUB";
 const char* ota_command_topic = "DMA/OTA/SUB";
 const char* ota_url = "https://raw.githubusercontent.com/rezaul-rimon/OTA-Practice/main/ota/firmware.bin";
-const char* device_id = "OTA-8888";
+const char* device_id = "OTA-4321";
 
 void performOTA();
 WiFiClient espClient;
@@ -86,9 +86,6 @@ void performOTA() {
 void performOTA() {
   Serial.println("Starting OTA update...");
 
-  // Suspend network and main tasks
-  vTaskSuspend(NULL); // Suspend current task
-
   HTTPClient http;
   http.begin(ota_url);
   int httpCode = http.GET();
@@ -99,7 +96,9 @@ void performOTA() {
       Update.writeStream(http.getStream());
       if (Update.end() && Update.isFinished()) {
         Serial.println("OTA update completed. Restarting...");
+        client.loop(); // Ensure MQTT client processes the publish
         client.publish(mqtt_topic, "OTA update successful");
+        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay to allow message to send
         ESP.restart();
       } else {
         Serial.println("OTA update failed!");
@@ -115,6 +114,7 @@ void performOTA() {
   }
   http.end();
 
+  vTaskDelay(1000 / portTICK_PERIOD_MS); // Give time for MQTT message to send
   ESP.restart();
 }
 
