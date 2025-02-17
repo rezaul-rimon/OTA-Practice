@@ -13,7 +13,7 @@ const char* mqtt_pass = "Secret!@#$1234";
 const char* mqtt_topic = "DMA/OTA/PUB";
 const char* ota_command_topic = "DMA/OTA/SUB";
 const char* ota_url = "https://raw.githubusercontent.com/rezaul-rimon/OTA-Practice/main/ota/firmware.bin";
-const char* device_id = "OTA-1357";
+const char* device_id = "OTA-13579";
 
 void performOTA();
 WiFiClient espClient;
