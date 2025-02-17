@@ -13,7 +13,7 @@ const char* mqtt_pass = "Secret!@#$1234";
 const char* mqtt_topic = "DMA/OTA/PUB";
 const char* ota_command_topic = "DMA/OTA/SUB";
 const char* ota_url = "https://raw.githubusercontent.com/rezaul-rimon/OTA-Practice/main/ota/firmware.bin";
-const char* device_id = "OTA-9999";
+const char* device_id = "OTA-8888";
 
 void performOTA();
 WiFiClient espClient;
@@ -85,7 +85,9 @@ void performOTA() {
 
 void performOTA() {
   Serial.println("Starting OTA update...");
-  vTaskSuspendAll();  // Suspend all running tasks
+
+  // Suspend network and main tasks
+  vTaskSuspend(NULL); // Suspend current task
 
   HTTPClient http;
   http.begin(ota_url);
@@ -102,22 +104,18 @@ void performOTA() {
       } else {
         Serial.println("OTA update failed!");
         client.publish(mqtt_topic, "OTA update failed, restarting with last firmware");
-        xTaskResumeAll();  // Resume tasks if OTA failed
-        ESP.restart();
       }
     } else {
       Serial.println("OTA begin failed!");
       client.publish(mqtt_topic, "OTA begin failed, restarting with last firmware");
-      xTaskResumeAll();
-      ESP.restart();
     }
   } else {
     Serial.printf("HTTP request failed, error: %s\n", http.errorToString(httpCode).c_str());
     client.publish(mqtt_topic, "OTA HTTP request failed, restarting with last firmware");
-    xTaskResumeAll();
-    ESP.restart();
   }
   http.end();
+
+  ESP.restart();
 }
 
 
